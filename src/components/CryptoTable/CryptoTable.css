@@ -1,0 +1,241 @@
+/* Таблица crypto-name*/
+.crypto-table {
+  width: 100%; /* Таблица всегда занимает всю ширину страницы */
+  border-collapse: collapse;
+  background-color: #333;
+  color: #fff;
+  table-layout: fixed; /* Фиксированная ширина колонок */
+}
+
+.crypto-table th, .crypto-table td {
+  border: 1px solid #444;
+  padding: 12px;
+  min-width: 100px; /* Минимальная ширина для предотвращения сжатия */
+  overflow: hidden; /* Обрезка длинного текста */
+  text-overflow: ellipsis; /* Использовать троеточие для длинного текста */
+  white-space: nowrap; /* Запрещает перенос текста */
+}
+
+.crypto-table th {
+  background-color: #555;
+  text-align: left;
+}
+
+.crypto-table tr:nth-child(even) {
+  background-color: #444;
+}
+
+.crypto-table tr:hover {
+  background-color: #555;
+}
+
+.negative-change {
+  color: red;
+}
+
+.positive-change {
+  color: green;
+}
+
+/* Кнопка */
+button {
+  background-color: #028f00;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+button:hover {
+  background-color: #015800;
+}
+
+/* Изображения криптовалют */
+.crypto-image {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+/* Поисковая строка и фильтр */
+.search-filter {
+  display: flex;
+  justify-content: flex-end; /* Элементы справа */
+  gap: 15px; /* Отступ между элементами */
+  margin-bottom: 20px; /* Отступ от таблицы */
+}
+
+.search-filter input[type="text"] {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #444;
+  background-color: #222;
+  color: #fff;
+}
+
+.search-filter label {
+  display: flex;
+  align-items: center;
+  color: #fff;
+}
+
+/* Стили для чекбокса */
+.search-filter input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+/* Стили для криптовалют */
+.crypto-currency {
+  text-align: center;
+  background-color: #1e1e1e;
+  color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.crypto-info {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.crypto-item {
+  margin: 10px 20px;
+  font-size: 18px;
+}
+
+/* Центрирование информации о портфеле */
+.portfolio-info {
+  margin-top: 20px;
+  font-size: 20px;
+  text-align: center;
+}
+.navigation-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+button {
+  background-color: #00940a;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0 10px;
+}
+
+button:hover {
+  background-color: #007a08;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background-color: #00940a;
+  color: white;
+}
+
+.pagination button:hover {
+  background-color: #007a08;
+  color: white;
+}
+/* Header Styling */
+.crypto-header {
+  text-align: center;
+  background-color: #333;
+  color: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+
+.crypto-header-info {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.crypto-header-info span {
+  margin: 0 20px;
+  font-size: 18px;
+}
+
+.portfolio-info {
+  font-size: 16px;
+}
+/* src/components/CryptoTable/CryptoTable.css */
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #1b1b1b;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgb(76, 68, 68);
+  color: rgb(255, 255, 255);
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.modal-content table {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.modal-content table td {
+  padding: 10px;
+}
+
+button {
+  background-color: #028f00;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+button:hover {
+  background-color: #015800;
+}
+
+.crypto-name {
+  color: white;
+  cursor: pointer; /* Сохраняем курсор в виде указателя */
+}

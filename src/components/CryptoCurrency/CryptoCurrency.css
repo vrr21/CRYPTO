@@ -1,0 +1,54 @@
+.crypto-detail {
+  text-align: center;
+  color: #fff;
+  background-color: #1e1e1e;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.crypto-info {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.crypto-item {
+  padding: 10px 20px;
+  font-size: 18px;
+}
+
+.crypto-image {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  margin-bottom: 20px;
+}
+
+.portfolio-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+button {
+  background-color: #028f00;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+button:hover {
+  background-color: #015800;
+}
+
+.positive-change {
+  color: green;
+}
+
+.negative-change {
+  color: red;
+}

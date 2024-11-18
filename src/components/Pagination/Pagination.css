@@ -1,0 +1,32 @@
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+  }
+  
+  .pagination button {
+    background-color: #007bff; /* Цвет кнопки */
+    color: white; /* Цвет текста кнопки */
+    border: none;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .pagination button:hover {
+    background-color: #0056b3; /* Цвет кнопки при наведении */
+  }
+  
+  .pagination .disabled {
+    background-color: #c0c0c0; /* Цвет неактивной кнопки */
+    cursor: not-allowed;
+  }
+  
+  .pagination .active {
+    background-color: #0056b3; /* Цвет активной кнопки */
+    font-weight: bold; /* Выделение активной кнопки */
+  }
+  
