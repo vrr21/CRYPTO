@@ -1,29 +1,38 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
-import { addOrUpdateItem } from '../../slices/portfolioSlice';
+import React, { useState } from 'react';
+import './Modal.css';
 
-const Modal: React.FC<any> = ({ isOpen, onClose, crypto }) => {
-  const dispatch = useDispatch();
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  crypto: any;
+  onConfirm: (amount: number) => void;
+}
 
-  const handleConfirm = () => {
-    dispatch(addOrUpdateItem({
-      id: crypto.id,
-      name: crypto.name,
-      symbol: crypto.symbol,
-      price: parseFloat(crypto.priceUsd),
-      amount: 1,
-    }));
-    onClose();
-  };
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, crypto, onConfirm }) => {
+  const [amount, setAmount] = useState(1);
 
   if (!isOpen) return null;
 
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <button className="close-btn" onClick={onClose}>x</button>
+        <button className="close-btn" onClick={onClose}>
+          ×
+        </button>
         <h3>Add {crypto.name} to Portfolio</h3>
-        <button onClick={handleConfirm}>Confirm</button>
+        <p>Enter the amount to add:</p>
+        <input
+          type="number"
+          value={amount}
+          onChange={(e) => setAmount(parseInt(e.target.value, 10))}
+          min="1"
+        />
+        <button
+          onClick={() => onConfirm(amount)}
+          className="confirm-btn"
+        >
+          Confirm
+        </button>
       </div>
     </div>
   );

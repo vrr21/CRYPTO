@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addOrUpdateItem } from '../../slices/portfolioSlice';
 import axios from '../../api/instance';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import Modal from '../Modal/Modal'; // Импорт модального окна
 import './CryptoDetail.css';
 
 const CryptoDetail: React.FC = () => {
@@ -11,11 +12,13 @@ const CryptoDetail: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const cryptos = useSelector((state: any) => state.cryptos.list);
+  const portfolio = useSelector((state: any) => state.portfolio.items);
 
   const [crypto, setCrypto] = useState<any | null>(null);
   const [chartData, setChartData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [timeframe, setTimeframe] = useState('d1'); // Default to daily data.
+  const [isModalOpen, setIsModalOpen] = useState(false); // Управление модальным окном
 
   useEffect(() => {
     const fetchCrypto = async () => {
@@ -30,7 +33,6 @@ const CryptoDetail: React.FC = () => {
     const fetchChartData = async (cryptoId: string, interval: string) => {
       setLoading(true);
 
-      // Генерируем временные рамки для запросов (start и end)
       const now = Date.now();
       let start: number;
 
@@ -67,15 +69,28 @@ const CryptoDetail: React.FC = () => {
   if (!crypto) return <p>Loading...</p>;
 
   const handleAddToPortfolio = () => {
+    setIsModalOpen(true); // Открыть модальное окно
+  };
+
+  const handleConfirmAdd = (amount: number) => {
     dispatch(
       addOrUpdateItem({
         id: crypto.id,
         name: crypto.name,
         symbol: crypto.symbol,
         price: parseFloat(crypto.priceUsd),
-        amount: 1,
+        amount,
       })
     );
+
+    // Сохранение портфеля в localStorage
+    const updatedPortfolio = [
+      ...portfolio.filter((item: any) => item.id !== crypto.id),
+      { id: crypto.id, name: crypto.name, symbol: crypto.symbol, price: parseFloat(crypto.priceUsd), amount },
+    ];
+
+    localStorage.setItem('portfolio', JSON.stringify(updatedPortfolio));
+    setIsModalOpen(false); // Закрыть модальное окно
     alert(`${crypto.name} added to Portfolio!`);
   };
 
@@ -162,6 +177,15 @@ const CryptoDetail: React.FC = () => {
           </ResponsiveContainer>
         )}
       </div>
+
+      {isModalOpen && (
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          crypto={crypto}
+          onConfirm={handleConfirmAdd}
+        />
+      )}
     </div>
   );
 };

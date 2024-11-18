@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { fetchCryptos } from '../../slices/cryptoSlice';
-import { addOrUpdateItem, setPortfolio } from '../../slices/portfolioSlice'; // Экшены Redux
+import { addOrUpdateItem, setPortfolio } from '../../slices/portfolioSlice';
 import './CryptoTable.css';
 import PortfolioModal from '../Portfolio/PortfolioModal';
 import Pagination from '../Pagination/Pagination';
@@ -29,7 +29,7 @@ const CryptoTable: React.FC = () => {
     dispatch(fetchCryptos());
   }, [dispatch]);
 
-  // Загружаем портфель из localStorage при загрузке компонента
+  // Load portfolio from localStorage when the component mounts
   useEffect(() => {
     const savedPortfolio = localStorage.getItem('portfolio');
     if (savedPortfolio) {
@@ -37,7 +37,7 @@ const CryptoTable: React.FC = () => {
     }
   }, [dispatch]);
 
-  // Сохраняем портфель в localStorage при каждом изменении портфеля
+  // Save portfolio to localStorage and update stats whenever the portfolio changes
   useEffect(() => {
     localStorage.setItem('portfolio', JSON.stringify(portfolio));
     updatePortfolioStats();
@@ -195,7 +195,7 @@ const CryptoTable: React.FC = () => {
                 {parseFloat(crypto.changePercent24Hr).toFixed(2)}%
               </td>
               <td>
-                <button onClick={() => handleAddToPortfolio(crypto)}>Add to portfolio</button>
+                <button onClick={() => handleAddToPortfolio(crypto)}>Add</button>
               </td>
             </tr>
           ))}
