@@ -7,36 +7,22 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
-  const handlePrevious = () => {
-    if (currentPage > 1) {
-      onPageChange(currentPage - 1);
-    }
-  };
-
-  const handleNext = () => {
-    if (currentPage < totalPages) {
-      onPageChange(currentPage + 1);
-    }
-  };
-
+const Pagination: React.FC<PaginationProps> = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+}) => {
   return (
-    <div className="pagination">
-      <button onClick={handlePrevious} disabled={currentPage === 1} className={currentPage === 1 ? 'disabled' : ''}>
-      ←
-      </button>
-      {[...Array(totalPages)].map((_, index) => (
+    <div className="pagination-container">
+      {Array.from({ length: totalPages }, (_, index) => (
         <button
           key={index + 1}
           onClick={() => onPageChange(index + 1)}
-          className={currentPage === index + 1 ? 'active' : ''}
+          className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}
         >
           {index + 1}
         </button>
       ))}
-      <button onClick={handleNext} disabled={currentPage === totalPages} className={currentPage === totalPages ? 'disabled' : ''}>
-      →
-      </button>
     </div>
   );
 };

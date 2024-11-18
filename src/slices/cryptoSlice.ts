@@ -1,12 +1,10 @@
-
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import instance from '../api/instance';
-import { Crypto } from '../types/CryptoTypes';
 
 interface CryptoState {
-  list: Crypto[];
+  list: any[];
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  error: string | null;
+  error: string | null; // Исправляем тип
 }
 
 const initialState: CryptoState = {
@@ -15,10 +13,14 @@ const initialState: CryptoState = {
   error: null,
 };
 
-export const fetchCryptos = createAsyncThunk('cryptos/fetchCryptos', async () => {
-  const response = await instance.get('assets');
-  return response.data.data;
-});
+export const fetchCryptos = createAsyncThunk(
+  'cryptos/fetchCryptos',
+  async ({ page, limit }: { page: number; limit: number }) => {
+    const offset = (page - 1) * limit;
+    const response = await instance.get(`assets?offset=${offset}&limit=${limit}`);
+    return response.data.data;
+  }
+);
 
 const cryptoSlice = createSlice({
   name: 'cryptos',
@@ -28,6 +30,7 @@ const cryptoSlice = createSlice({
     builder
       .addCase(fetchCryptos.pending, (state) => {
         state.status = 'loading';
+        state.error = null; // Сбрасываем ошибку
       })
       .addCase(fetchCryptos.fulfilled, (state, action) => {
         state.status = 'succeeded';
@@ -35,7 +38,7 @@ const cryptoSlice = createSlice({
       })
       .addCase(fetchCryptos.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message || 'Failed to fetch data';
+        state.error = action.error.message || 'An unexpected error occurred';
       });
   },
 });

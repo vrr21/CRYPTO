@@ -4,41 +4,42 @@ import { useNavigate } from 'react-router-dom';
 import { fetchCryptos } from '../../slices/cryptoSlice';
 import { addOrUpdateItem, setPortfolio } from '../../slices/portfolioSlice';
 import './CryptoTable.css';
-import PortfolioModal from '../Portfolio/PortfolioModal';
 import Pagination from '../Pagination/Pagination';
+import PortfolioModal from '../Portfolio/PortfolioModal';
 
 const CryptoTable: React.FC = () => {
-  const dispatch = useDispatch();
-  const cryptos = useSelector((state: any) => state.cryptos.list);
-  const portfolio = useSelector((state: any) => state.portfolio.items);
+  const dispatch = useDispatch<any>(); // Типизируем dispatch через AppDispatch, если используете.
+  const cryptos = useSelector((state: any) => state.cryptos.list); // Получаем список криптовалют из Redux
+  const portfolio = useSelector((state: any) => state.portfolio.items); // Данные портфеля
   const navigate = useNavigate();
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showNullValues, setShowNullValues] = useState(false);
-  const [selectedCrypto, setSelectedCrypto] = useState<any | null>(null);
-  const [showModal, setShowModal] = useState(false);
-  const [cryptoAmount, setCryptoAmount] = useState(1);
-  const [portfolioCost, setPortfolioCost] = useState(0);
-  const [portfolioChange, setPortfolioChange] = useState(0);
-  const [showPortfolioModal, setShowPortfolioModal] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 100;
+  const [searchTerm, setSearchTerm] = useState(''); // Поиск криптовалют
+  const [showNullValues, setShowNullValues] = useState(false); // Показать или скрыть нулевые значения
+  const [selectedCrypto, setSelectedCrypto] = useState<any | null>(null); // Выбранная криптовалюта
+  const [showModal, setShowModal] = useState(false); // Отображение модального окна
+  const [cryptoAmount, setCryptoAmount] = useState(1); // Количество криптовалют для добавления
+  const [portfolioCost, setPortfolioCost] = useState(0); // Общая стоимость портфеля
+  const [portfolioChange, setPortfolioChange] = useState(0); // Изменение стоимости портфеля
+  const [showPortfolioModal, setShowPortfolioModal] = useState(false); // Показать модальное окно портфеля
+  const [currentPage, setCurrentPage] = useState(1); // Текущая страница
+  const itemsPerPage = 100; // Количество криптовалют на странице
+  const totalPages = Math.ceil(2000 / itemsPerPage); // Предполагаем, что максимум 2000 криптовалют.
 
   useEffect(() => {
-    //@ts-ignore
-    dispatch(fetchCryptos());
-  }, [dispatch]);
+    // Загружаем данные для текущей страницы
+    dispatch(fetchCryptos({ page: currentPage, limit: itemsPerPage }));
+  }, [dispatch, currentPage]);
 
-  // Load portfolio from localStorage when the component mounts
   useEffect(() => {
+    // Загружаем сохраненный портфель из localStorage
     const savedPortfolio = localStorage.getItem('portfolio');
     if (savedPortfolio) {
       dispatch(setPortfolio(JSON.parse(savedPortfolio)));
     }
   }, [dispatch]);
 
-  // Save portfolio to localStorage and update stats whenever the portfolio changes
   useEffect(() => {
+    // Обновляем localStorage и пересчитываем статистику портфеля
     localStorage.setItem('portfolio', JSON.stringify(portfolio));
     updatePortfolioStats();
   }, [portfolio]);
@@ -49,7 +50,7 @@ const CryptoTable: React.FC = () => {
 
     portfolio.forEach((item: any) => {
       const cost = item.amount * item.price;
-      const change = cost * (item.changePercent24Hr || 0) / 100;
+      const change = (cost * (item.changePercent24Hr || 0)) / 100;
       totalCost += cost;
       totalChange += change;
     });
@@ -112,13 +113,6 @@ const CryptoTable: React.FC = () => {
     setShowPortfolioModal(false);
   };
 
-  const totalPages = Math.ceil(filteredCryptos.length / itemsPerPage);
-
-  const currentCryptos = filteredCryptos.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -179,7 +173,7 @@ const CryptoTable: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {currentCryptos.map((crypto: any, index: number) => (
+          {filteredCryptos.map((crypto: any, index: number) => (
             <tr key={crypto.id}>
               <td>{index + 1 + (currentPage - 1) * itemsPerPage}</td>
               <td>
