@@ -189,7 +189,7 @@ const CryptoTable: React.FC = () => {
                 {parseFloat(crypto.changePercent24Hr).toFixed(2)}%
               </td>
               <td>
-                <button onClick={() => handleAddToPortfolio(crypto)}>Add</button>
+                <button onClick={() => handleAddToPortfolio(crypto)}>Add to portfolio</button>
               </td>
             </tr>
           ))}
