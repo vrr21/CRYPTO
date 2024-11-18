@@ -22,16 +22,41 @@ const CryptoDetail: React.FC = () => {
       const selectedCrypto = cryptos.find((c: any) => c.id === id);
       setCrypto(selectedCrypto);
 
+      if (selectedCrypto) {
+        await fetchChartData(selectedCrypto.id, timeframe);
+      }
+    };
+
+    const fetchChartData = async (cryptoId: string, interval: string) => {
+      setLoading(true);
+
+      // Генерируем временные рамки для запросов (start и end)
+      const now = Date.now();
+      let start: number;
+
+      switch (interval) {
+        case 'h12': // Last 7 days
+          start = now - 7 * 24 * 60 * 60 * 1000; // 7 days ago
+          break;
+        case 'd1': // Last 30 days
+          start = now - 30 * 24 * 60 * 60 * 1000; // 30 days ago
+          break;
+        default: // For 'd1' (daily interval for 1 day)
+          start = now - 1 * 24 * 60 * 60 * 1000; // 1 day ago
+      }
+
       try {
-        const response = await axios.get(`assets/${id}/history?interval=${timeframe}`);
+        const response = await axios.get(
+          `assets/${cryptoId}/history?interval=${interval}&start=${start}&end=${now}`
+        );
         const data = response.data.data.map((point: any) => ({
           date: new Date(point.time).toLocaleDateString(),
           price: parseFloat(point.priceUsd),
         }));
         setChartData(data);
-        setLoading(false);
       } catch (error) {
-        console.error('Error fetching crypto data:', error);
+        console.error('Error fetching chart data:', error);
+      } finally {
         setLoading(false);
       }
     };
@@ -42,21 +67,27 @@ const CryptoDetail: React.FC = () => {
   if (!crypto) return <p>Loading...</p>;
 
   const handleAddToPortfolio = () => {
-    dispatch(addOrUpdateItem({
-      id: crypto.id,
-      name: crypto.name,
-      symbol: crypto.symbol,
-      price: parseFloat(crypto.priceUsd),
-      amount: 1,
-    }));
+    dispatch(
+      addOrUpdateItem({
+        id: crypto.id,
+        name: crypto.name,
+        symbol: crypto.symbol,
+        price: parseFloat(crypto.priceUsd),
+        amount: 1,
+      })
+    );
     alert(`${crypto.name} added to Portfolio!`);
   };
 
   return (
     <div className="crypto-detail">
       <div className="action-buttons">
-        <button onClick={handleAddToPortfolio} className="add-btn">Add to Portfolio</button>
-        <button className="back-btn" onClick={() => navigate('/')}>Back</button>
+        <button onClick={handleAddToPortfolio} className="add-btn">
+          Add to Portfolio
+        </button>
+        <button className="back-btn" onClick={() => navigate('/')}>
+          Back
+        </button>
       </div>
 
       <div className="crypto-header">
@@ -65,23 +96,37 @@ const CryptoDetail: React.FC = () => {
           alt={crypto.name}
           className="crypto-logo"
         />
-        <h2>{crypto.name} ({crypto.symbol})</h2>
+        <h2>
+          {crypto.name} ({crypto.symbol})
+        </h2>
       </div>
 
       <table className="crypto-table">
         <tbody>
           <tr>
-            <td><strong>Price:</strong></td>
+            <td>
+              <strong>Price:</strong>
+            </td>
             <td>${parseFloat(crypto.priceUsd).toFixed(2)}</td>
           </tr>
           <tr>
-            <td><strong>Market Cap:</strong></td>
+            <td>
+              <strong>Market Cap:</strong>
+            </td>
             <td>${(parseFloat(crypto.marketCapUsd) / 1e9).toFixed(2)}B</td>
           </tr>
           <tr>
-            <td><strong>Change (24h):</strong></td>
             <td>
-              <span className={parseFloat(crypto.changePercent24Hr) > 0 ? 'positive-change' : 'negative-change'}>
+              <strong>Change (24h):</strong>
+            </td>
+            <td>
+              <span
+                className={
+                  parseFloat(crypto.changePercent24Hr) > 0
+                    ? 'positive-change'
+                    : 'negative-change'
+                }
+              >
                 {parseFloat(crypto.changePercent24Hr).toFixed(2)}%
               </span>
             </td>
@@ -97,7 +142,7 @@ const CryptoDetail: React.FC = () => {
           onChange={(e) => setTimeframe(e.target.value)}
         >
           <option value="d1">Day</option>
-          <option value="w1">Week</option>
+          <option value="h12">Week</option>
           <option value="m1">Month</option>
         </select>
       </div>
