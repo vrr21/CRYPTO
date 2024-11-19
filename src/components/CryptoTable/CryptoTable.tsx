@@ -8,30 +8,28 @@ import Pagination from '../Pagination/Pagination';
 import PortfolioModal from '../Portfolio/PortfolioModal';
 
 const CryptoTable: React.FC = () => {
-  const dispatch = useDispatch<any>(); // Типизируем dispatch через AppDispatch, если используете.
-  const cryptos = useSelector((state: any) => state.cryptos.list); // Получаем список криптовалют из Redux
-  const portfolio = useSelector((state: any) => state.portfolio.items); // Данные портфеля
+  const dispatch = useDispatch<any>();
+  const cryptos = useSelector((state: any) => state.cryptos.list);
+  const portfolio = useSelector((state: any) => state.portfolio.items);
   const navigate = useNavigate();
 
-  const [searchTerm, setSearchTerm] = useState(''); // Поиск криптовалют
-  const [showNullValues, setShowNullValues] = useState(false); // Показать или скрыть нулевые значения
-  const [selectedCrypto, setSelectedCrypto] = useState<any | null>(null); // Выбранная криптовалюта
-  const [showModal, setShowModal] = useState(false); // Отображение модального окна
-  const [cryptoAmount, setCryptoAmount] = useState(1); // Количество криптовалют для добавления
-  const [portfolioCost, setPortfolioCost] = useState(0); // Общая стоимость портфеля
-  const [portfolioChange, setPortfolioChange] = useState(0); // Изменение стоимости портфеля
-  const [showPortfolioModal, setShowPortfolioModal] = useState(false); // Показать модальное окно портфеля
-  const [currentPage, setCurrentPage] = useState(1); // Текущая страница
-  const itemsPerPage = 100; // Количество криптовалют на странице
-  const totalPages = Math.ceil(2000 / itemsPerPage); // Предполагаем, что максимум 2000 криптовалют.
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showNullValues, setShowNullValues] = useState(false);
+  const [selectedCrypto, setSelectedCrypto] = useState<any | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [cryptoAmount, setCryptoAmount] = useState(1);
+  const [portfolioCost, setPortfolioCost] = useState(0);
+  const [portfolioChange, setPortfolioChange] = useState(0);
+  const [showPortfolioModal, setShowPortfolioModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 100;
+  const maxPages = 9;
 
   useEffect(() => {
-    // Загружаем данные для текущей страницы
     dispatch(fetchCryptos({ page: currentPage, limit: itemsPerPage }));
   }, [dispatch, currentPage]);
 
   useEffect(() => {
-    // Загружаем сохраненный портфель из localStorage
     const savedPortfolio = localStorage.getItem('portfolio');
     if (savedPortfolio) {
       dispatch(setPortfolio(JSON.parse(savedPortfolio)));
@@ -39,7 +37,6 @@ const CryptoTable: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    // Обновляем localStorage и пересчитываем статистику портфеля
     localStorage.setItem('portfolio', JSON.stringify(portfolio));
     updatePortfolioStats();
   }, [portfolio]);
@@ -63,10 +60,12 @@ const CryptoTable: React.FC = () => {
     return `https://assets.coincap.io/assets/icons/${symbol.toLowerCase()}@2x.png`;
   };
 
+  // Фильтруем криптовалюты, исключая с NaN%
   const filteredCryptos = cryptos.filter((crypto: any) => {
     const matchesSearch = crypto.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const isValidChange = !isNaN(parseFloat(crypto.changePercent24Hr));
     const showNulls = showNullValues || (!showNullValues && crypto.priceUsd !== null);
-    return matchesSearch && showNulls;
+    return matchesSearch && isValidChange && showNulls;
   });
 
   const bitcoin = cryptos.find((crypto: any) => crypto.symbol === 'BTC');
@@ -114,7 +113,9 @@ const CryptoTable: React.FC = () => {
   };
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    if (page <= maxPages) {
+      setCurrentPage(page);
+    }
   };
 
   return (
@@ -196,7 +197,7 @@ const CryptoTable: React.FC = () => {
         </tbody>
       </table>
 
-      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+      <Pagination currentPage={currentPage} totalPages={maxPages} onPageChange={handlePageChange} />
 
       {showModal && (
         <div className="modal">

@@ -237,5 +237,5 @@ button:hover {
 
 .crypto-name {
   color: white;
-  cursor: pointer; /* Сохраняем курсор в виде указателя */
+  cursor: pointer;
 }
